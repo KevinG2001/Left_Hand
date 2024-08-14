@@ -47,6 +47,10 @@ module.exports = {
       new ButtonBuilder()
         .setCustomId("randomTrios")
         .setLabel("Trios")
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("randomSquads")
+        .setLabel("Squads")
         .setStyle(ButtonStyle.Success)
     );
 

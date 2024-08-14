@@ -38,6 +38,22 @@ function getRandomTrios(array) {
   return trios;
 }
 
+function getRandomSquads(array) {
+  // Shuffle the array
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+
+  // Create squads (teams of 4)
+  const squads = [];
+  for (let i = 0; i < array.length; i += 4) {
+    squads.push(array.slice(i, i + 4));
+  }
+
+  return squads;
+}
+
 module.exports = {
   name: "interactionCreate",
   async execute(interaction) {
@@ -157,6 +173,39 @@ module.exports = {
         const embed = new EmbedBuilder()
           .setTitle("Random Trios")
           .setDescription(trioDescriptions)
+          .setColor("#ff0000");
+
+        // Update the message with the random duos
+        await interaction.update({ embeds: [embed], components: [] });
+      } else if (interaction.customId === "randomSquads") {
+        // Ensure the user is the one who ran the command initially
+        if (interaction.user.id !== interaction.message.interaction.user.id) {
+          return await interaction.reply({
+            content: "You are not authorized to perform this action.",
+            ephemeral: true,
+          });
+        }
+
+        // Get the list of usernames from the lobby
+        const usernames = [...lobby];
+        if (usernames.length < 4) {
+          return await interaction.reply({
+            content: "Not enough users to form teams.",
+            ephemeral: true,
+          });
+        }
+
+        // Generate random pairs
+        const squads = getRandomSquads(usernames);
+
+        // Create the embed message for the random trios
+        const squadsDescriptions = squads
+          .map((trio, index) => `Trio ${index + 1}: ${trio.join(" & ")}`)
+          .join("\n");
+
+        const embed = new EmbedBuilder()
+          .setTitle("Random Squads")
+          .setDescription(squadsDescriptions)
           .setColor("#ff0000");
 
         // Update the message with the random duos
