@@ -42,7 +42,11 @@ module.exports = {
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId("randomDuos")
-        .setLabel("Duo")
+        .setLabel("Duos")
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("randomTrios")
+        .setLabel("Trios")
         .setStyle(ButtonStyle.Success)
     );
 

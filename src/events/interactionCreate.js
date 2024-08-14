@@ -24,6 +24,20 @@ function getRandomPairs(array) {
   return pairs;
 }
 
+function getRandomTrios(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+
+  const trios = [];
+  for (let i = 0; i < array.length; i += 3) {
+    trios.push(array.slice(i, i + 3));
+  }
+
+  return trios;
+}
+
 module.exports = {
   name: "interactionCreate",
   async execute(interaction) {
@@ -110,6 +124,39 @@ module.exports = {
         const embed = new EmbedBuilder()
           .setTitle("Random Duos")
           .setDescription(pairDescriptions)
+          .setColor("#ff0000");
+
+        // Update the message with the random duos
+        await interaction.update({ embeds: [embed], components: [] });
+      } else if (interaction.customId === "randomTrios") {
+        // Ensure the user is the one who ran the command initially
+        if (interaction.user.id !== interaction.message.interaction.user.id) {
+          return await interaction.reply({
+            content: "You are not authorized to perform this action.",
+            ephemeral: true,
+          });
+        }
+
+        // Get the list of usernames from the lobby
+        const usernames = [...lobby];
+        if (usernames.length < 3) {
+          return await interaction.reply({
+            content: "Not enough users to form teams.",
+            ephemeral: true,
+          });
+        }
+
+        // Generate random pairs
+        const trios = getRandomTrios(usernames);
+
+        // Create the embed message for the random trios
+        const trioDescriptions = trios
+          .map((trio, index) => `Trio ${index + 1}: ${trio.join(" & ")}`)
+          .join("\n");
+
+        const embed = new EmbedBuilder()
+          .setTitle("Random Trios")
+          .setDescription(trioDescriptions)
           .setColor("#ff0000");
 
         // Update the message with the random duos
