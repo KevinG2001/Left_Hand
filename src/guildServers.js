@@ -65,9 +65,10 @@ function wireWatcher(client, inst) {
 		}).catch(console.error),
 	);
 	watcher.on("death", ({ line }) =>
-		mcToDiscord(client, inst, { username: "Server", content: `💀 ${line}` }).catch(
-			console.error,
-		),
+		mcToDiscord(client, inst, {
+			username: "Server",
+			content: `💀 ${line}`,
+		}).catch(console.error),
 	);
 	watcher.on("advancement", ({ player, name }) =>
 		mcToDiscord(client, inst, {
@@ -105,7 +106,10 @@ export function stopServer(guildId) {
 export async function startAll(client) {
 	for (const cfg of db.allServers()) {
 		await startServer(client, cfg).catch((err) =>
-			console.error(`[guildServers] failed to start ${cfg.guildId}:`, err.message),
+			console.error(
+				`[guildServers] failed to start ${cfg.guildId}:`,
+				err.message,
+			),
 		);
 	}
 	console.log(`[guildServers] started ${instances.size} server(s)`);
@@ -129,7 +133,10 @@ async function refreshOne(client, inst) {
 	try {
 		channel = await client.channels.fetch(inst.cfg.statusChannelId);
 	} catch (err) {
-		console.error(`[statusEmbed:${inst.cfg.guildId}] channel fetch failed:`, err.message);
+		console.error(
+			`[statusEmbed:${inst.cfg.guildId}] channel fetch failed:`,
+			err.message,
+		);
 		return;
 	}
 
